@@ -6,12 +6,11 @@ const app = express();
 const port = process.env.PORT || 3000;
 const dataFilePath = path.resolve(__dirname, 'data/restaurants.json')
 
-const getJson = (callback) => {
-    let jsonData = fsPromises.readFile(dataFilePath, 'utf-8')
-        .then(data => JSON.parse(data));
-    console.log(jsonData);
-    console.log('after reading file');
-    return(jsonData);
+async function getJson(){
+    let jsonData = await fsPromises.readFile(dataFilePath, 'utf-8');
+    let restaurants = JSON.parse(jsonData);
+    console.log(restaurants);
+    return(restaurants);
 }
 
 app.get('/data', (req, res)=>{
