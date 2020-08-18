@@ -1,32 +1,33 @@
 const express = require("express");
 const fs = require("fs");
-const utils = require("utils");
 const path = require("path");
+const { resolve } = require("path");
+const { rejects } = require("assert");
 
 const app = express();
 const port = process.env.PORT || 3000;
 const dataFilePath = path.resolve(__dirname, 'data/restaurants.json')
 
-const getJson = (callback) => {
-    fs.readFile(dataFilePath,'utf-8', (err, data)=>{
-        if(err){
-            callback(err, null); 
-        }else{
-            console.log('reading file data');
-            callback(null, data);
-        }
+const getJson = () => {
+    return new Promise((resolve, reject) => {
+        fs.readFile(dataFilePath,'utf-8', (err, data)=>{
+            if(err){
+                reject(err); 
+            }else{
+                console.log('reading file data');
+                resolve(data);
+            }
+        });
+        console.log('after reading file');
     });
-    console.log('after reading file');
 }
 
 app.get('/data', (req, res)=>{
-    getJson((err, data)=>{
-        if(err){
-            throw err;
-        }
-        let restaurantData = JSON.parse(data);
-        res.send(restaurantData);
-    });
+    getJson()
+        .then(data => {
+            let restaurantData = JSON.parse(data);
+            res.send(restaurantData);
+        })
 });
 
 app.get('/', (req, res)=>{
