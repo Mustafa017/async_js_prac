@@ -9,17 +9,18 @@ const dataFilePath = path.resolve(__dirname, 'data/restaurants.json')
 async function getJson(){
     let jsonData = await fsPromises.readFile(dataFilePath, 'utf-8');
     let restaurants = JSON.parse(jsonData);
-    console.log(restaurants);
-    return(restaurants);
+    return restaurants;
 }
 
-app.get('/data', (req, res)=>{
-    getJson()
-        .then(data => res.send(data));
+app.get('/data', async(req, res)=>{
+    let resData = await getJson();
+    res.send(resData);
+    // getJson()
+    //     .then(data => res.send(data));
 });
 
 app.get('/', (req, res)=>{
     res.send('Asynchronous Javascript Practice');
-})
+});
 
-app.listen(3000, (err)=>(err) ? err : console.log(`server up and running on port ${port}`))
+app.listen(3000, (err)=>(err) ? err : console.log(`server up and running on port ${port}`));
